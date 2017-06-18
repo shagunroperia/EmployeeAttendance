@@ -31,6 +31,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import org.apache.poi.ss.usermodel.Cell;
@@ -191,7 +192,7 @@ public class EmployeeAttendance {
                                     String cellInput = cell.getStringCellValue();
                                     if(cellInput.equals("Absent"))
                                     {
-                                       label.setText("Success") ;
+                                       label.setText("Success entry") ;
                                        colcount = 5;
                                        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
                                        String myDate = df.format(new Date());
@@ -208,8 +209,17 @@ public class EmployeeAttendance {
                                     }
                                     else
                                     {
-                                        label.setBackground(Color.RED);
-                                        label.setText("Already Inserted");
+                                        label.setBackground(Color.GREEN);
+                                        label.setText("Thank you!");
+                                       colcount = 7;
+                                       Date date = new Date();
+                                       SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                                       String time = sdf.format(date);
+                                       cell = row.getCell(++colcount);
+                                       cell.setCellValue((String)time);
+                                       FileOutputStream fout = new FileOutputStream("EmployeeAttendence.xlsx");
+                                       wb.write(fout);
+                                         
                                         
                                     }
                                     
@@ -364,6 +374,9 @@ public class EmployeeAttendance {
                                   cell.setCellValue((String) "Absent" );
                                   cell = row.createCell(++colcount);
                                   cell.setCellValue((String) "Absent" );
+                                  cell=row.createCell(++colcount);
+                                  cell.setCellValue((String) "Absent" );
+                                  
                                   
                                   FileOutputStream fout = new FileOutputStream("EmployeeAttendence.xlsx");
                                   wb.write(fout);
@@ -399,7 +412,10 @@ public class EmployeeAttendance {
                                    cell = row.createCell(++colcount);
                                    cell.setCellValue((String) "DATE" );
                                    cell = row.createCell(++colcount);
-                                   cell.setCellValue((String) "TIME" );
+                                   cell.setCellValue((String) "TIME ENTRY" );
+                                   cell = row.createCell(++colcount);
+                                   cell.setCellValue((String) "TIME EXIT" );
+                                   
                                    
                                    row = sheet.createRow(++rowcount);
                                    colcount=-1;
@@ -415,6 +431,8 @@ public class EmployeeAttendance {
                                    cell.setCellValue((String) emp.phone );
                                    cell = row.createCell(++colcount);
                                    cell.setCellValue((String) emp.designation );
+                                   cell = row.createCell(++colcount);
+                                   cell.setCellValue((String) "Absent" );
                                    cell = row.createCell(++colcount);
                                    cell.setCellValue((String) "Absent" );
                                    cell = row.createCell(++colcount);
@@ -507,7 +525,7 @@ public class EmployeeAttendance {
                    p3.add(logout1);
                   
                    final JLabel searchresult= new JLabel("");
-                   searchresult.setBounds(150,200,500,200);
+                   searchresult.setBounds(150,10,500,200);
                    p3.add(searchresult);
                    
                    logout1.addActionListener(new ActionListener()
@@ -530,13 +548,28 @@ public class EmployeeAttendance {
                    }
                    }); 
                    
+                     String[] columnNames = {"First Name", "Last Name","Email","Contact","Designation", "Date" ,"TimeEntry","TimeExit"};
+                       String empfName="",emplName="",empemail="", empphn="", empds="",empdate="", emptimeentry="", emptimeexit="";
+                    Object[][] data1 = {{empfName, emplName, empemail,empphn, empds, empdate, emptimeentry,emptimeexit}};
+                        final DefaultTableModel model = new DefaultTableModel(data1, columnNames);
+                        final JTable table;
+                        table= new JTable(model);
+                        table.setForeground(Color.RED);
+                        table.setBackground(Color.BLACK);
+                        table.setFillsViewportHeight(true);
+                        final JScrollPane scroll= new JScrollPane(table);
+                        scroll.setBounds( 20, 200, 800, 350 ); 
+                        p3.add(scroll);
+                       scroll.setVisible(false);
+                    
                    
+              
                    
                    search.addActionListener(new ActionListener(){
                    @Override
                    public void actionPerformed(ActionEvent e){
                     String searchempid=searchtextfield.getText();
-                    String empfName="",emplName="",empemail="", empphn="", empds="",empdate="", emptime="";
+                    
                     try {     
                         FileInputStream fin = new FileInputStream("EmployeeAttendence.xlsx");                          
                         XSSFWorkbook wb = new XSSFWorkbook(fin);
@@ -546,67 +579,64 @@ public class EmployeeAttendance {
                         Cell cell;
                         String eid;
                         rowcount = sheet.getLastRowNum();
-                        for(i=0;i<rowcount;i++){
+                        for(i=1;i<=rowcount;i++){
                         row = sheet.getRow(i);
                         cell = row.getCell(0);
                         eid = cell.getStringCellValue();
-                        String[] columnNames = {"First Name", "Last Name","Email","Contact","Designation", "Date" ,"Time"};
-                        Object[][] data1 = {{empfName, emplName, empemail,empphn, empds, empdate, emptime}};
-                        JTable table= new JTable(data1, columnNames);
-                        JScrollPane scroll= new JScrollPane(table);
-                       // int count=0;
-                       // int rowrecord[];
+                      
                         if(searchempid.length()!=0){
                         if(eid.equals(searchempid))                                
-                                {
-                                    searchresult.setText("");
-                                   // count++;
+                                {   searchresult.setForeground(Color.GREEN);
+                                    searchresult.setText("Your search results are as displayed! ");
+                                  
+                                    
+                                    String empfName1,emplName1, empemail1,empphn1,empds1,empdate1,emptimeentry1,emptimeexit1;
                                     cell=row.getCell(1);
-                                    empfName=cell.getStringCellValue();
+                                    empfName1=cell.getStringCellValue();
                                     
                                     cell=row.getCell(2);
-                                    emplName=cell.getStringCellValue();
+                                    emplName1=cell.getStringCellValue();
                                     
                                     cell=row.getCell(3);
-                                    empemail=cell.getStringCellValue();
+                                    empemail1=cell.getStringCellValue();
                                     
                                     cell=row.getCell(4);
-                                    empphn=cell.getStringCellValue();
+                                    empphn1=cell.getStringCellValue();
                                     
                                     cell=row.getCell(5);
-                                    empds=cell.getStringCellValue();
+                                    empds1=cell.getStringCellValue();
                                     
                                     cell=row.getCell(6);
-                                    empdate=cell.getStringCellValue();
+                                    empdate1=cell.getStringCellValue();
                                     
                                     cell=row.getCell(7);
-                                    emptime=cell.getStringCellValue();
+                                    emptimeentry1=cell.getStringCellValue();
                                     
-                                    Object[][] data = {{empfName, emplName, empemail,empphn, empds, empdate, emptime}};
+                                    cell=row.getCell(8);
+                                    emptimeexit1=cell.getStringCellValue();
+                                    
+                                    Object[] newRecord ={empfName1, emplName1, empemail1,empphn1, empds1, empdate1, emptimeentry1,emptimeexit1};
+                                   model.addRow(newRecord);
                                    
-                                    table= new JTable(data, columnNames);
-                                    scroll = new JScrollPane(table);
-                                    scroll.setBounds( 20, 200, 800, 350 ); // x, y, width, height
-                                    p3.add(scroll);
-                                   // table.setBounds(150, 200, 800, 350);
-                                    table.setForeground(Color.RED);
-                                    table.setBackground(Color.BLACK);
-                                    table.setFillsViewportHeight(true);
+                                   scroll.setVisible(true);
+                                   p3.add(scroll);
+                                   
+                                  
+                                   
+                                   
+                                
+                                    
                             }
                                 else
                                 {
-                                  Object[][] data2 = {{"", "", "","", "", "", ""}};
-                         table= new JTable(data2, columnNames);
-                       scroll= new JScrollPane(table);
-                                scroll.setVisible(false); 
+                                   
                                 searchresult.setForeground(Color.RED);
                                 searchresult.setText("Sorry no such employee is has been registered!");
                                 }
                         } 
                         else
                         {
-                   scroll.setOpaque(true);        
-                   searchresult.setForeground(Color.RED);
+                  searchresult.setForeground(Color.RED);
                    searchresult.setText("Please enter the emp id!!");
                    }
                         }
