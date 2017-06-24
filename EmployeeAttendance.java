@@ -38,10 +38,26 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.util.regex.Matcher.*;
+import java.util.regex.Pattern.*;
+import java.util.regex.*;
 
 public class EmployeeAttendance 
 {
-
+  public static boolean isValidEmailAddress(String email) {
+           String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+           Pattern p = Pattern.compile(ePattern);
+           Matcher m = p.matcher(email);
+           return m.matches();
+    }
+  
+  public static boolean isValidPhoneNumber(String phone){
+  String ePattern="^[7-9][0-9]{9}$";
+  Pattern p=Pattern.compile(ePattern);
+  Matcher m=p.matcher(phone);
+  return m.matches();
+  }
+  
     public static void main(String[] args) 
     {
        
@@ -51,7 +67,7 @@ public class EmployeeAttendance
         File todayFile = new File(todayDate + ".xlsx");
         if(!todayFile.exists())
         {
-            
+            System.out.println("today file");
             File employeeDataFile = new File("EmployeeData.xlsx");
             
             if(employeeDataFile.exists())
@@ -88,7 +104,7 @@ public class EmployeeAttendance
                     
                     for(i=1;i<=rowCount;i++)
                     {
-                        Row r = st.getRow(i);
+                        Row r = st.getRow(i);    
                         row = sheet.createRow(i);
                         
                         String value;
@@ -258,6 +274,7 @@ public class EmployeeAttendance
                                 public void actionPerformed(ActionEvent e) 
                                 {
                                     aFrame.setVisible(false);
+                                    text.setText("");
                                 }
                                         
                             });
@@ -313,7 +330,7 @@ public class EmployeeAttendance
                             aFrame.setSize(200,150);
                             aFrame.setVisible(true);
                         }
-                        catch (IOException | NotFoundException ex) 
+                       catch (IOException | NotFoundException ex) 
                         {
                             Logger.getLogger(EmployeeAttendance.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -329,7 +346,7 @@ public class EmployeeAttendance
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                
+                System.out.println("In the login");
                 String inputUserId,inputPassword;
                 inputUserId = adminIdTextField.getText();
                 inputPassword = passwordField.getText();
@@ -347,7 +364,10 @@ public class EmployeeAttendance
                     p1.setBackground(Color.GRAY);
                     p1.setLayout(null);
            
-                   
+                    final JLabel error= new JLabel("");
+                    error.setBounds(60, 70, 250, 20);
+                    error.setForeground(Color.red);
+                    p1.add(error);
                   
                     JLabel p1Heading = new JLabel("NEW EMPLOYEE REGISTRATION");
                     p1Heading.setBounds(80,100,250,20);
@@ -380,6 +400,10 @@ public class EmployeeAttendance
                     final JTextField emailTextField = new JTextField();
                     emailTextField.setBounds(230,340,100,20);
                     p1.add(emailTextField);
+                    
+                    final JLabel emailvalidation= new JLabel("");
+                    emailvalidation.setBounds(360,340,100,20);
+                    p1.add(emailvalidation);
                    
                     JLabel phone = new JLabel("PHONE");
                     phone.setBounds(55,400,100,20);
@@ -387,6 +411,7 @@ public class EmployeeAttendance
                     final JTextField phoneTextField = new JTextField();
                     phoneTextField.setBounds(230,400,100,20);
                     p1.add(phoneTextField);
+                    
                    
                     JLabel designation = new JLabel("DESIGNATION");
                     designation.setBounds(55,460,100,20);
@@ -420,7 +445,55 @@ public class EmployeeAttendance
                             emp.email = emailTextField.getText();
                             emp.phone = phoneTextField.getText();
                             emp.designation = designationTextField.getText();
-
+                            
+                            
+                            if("".equals(emp.empId)||"".equals(emp.firstName)||"".equals(emp.lastName)||"".equals(emp.email)||"".equals(emp.phone)||"".equals(emp.designation)){
+                            error.setText("Please fill in all the fields!!");
+                            
+                            }
+                            else{
+                                
+                            if((!isValidEmailAddress(emp.email))|| !isValidPhoneNumber(emp.phone)){
+                                
+                                        if((!isValidEmailAddress(emp.email))&&(!isValidPhoneNumber(emp.phone))){
+                                        error.setText("Enter valid email and phone number!!!!");
+                                       
+                                        }
+                                        else if(!isValidEmailAddress(emp.email)){
+                                            error.setText("Enter valid email!!!!");
+                                        }
+                                        else{
+                                        error.setText("Enter valid phone number!!!!");
+                                        } 
+                          
+                            }
+                            else{
+                                File employeeDataFile = new File("EmployeeData.xlsx");
+                                if(employeeDataFile.exists())
+                                {
+                                    try
+                                    {
+                                    FileInputStream filecheck = new FileInputStream(employeeDataFile);
+                                    XSSFWorkbook wbcheck = new XSSFWorkbook(filecheck);
+                                    XSSFSheet stcheck = wbcheck.getSheetAt(0);
+                                    int rowCountcheck = stcheck.getLastRowNum();
+                                    String id;
+                                    boolean p=false;
+                                    String empid=empIdTextField.getText();
+                                    for(int i=0;i<rowCountcheck;i++)
+                                    {
+                                         Row r = stcheck.getRow(i+1);
+                                         String value;
+                                         id=r.getCell(0).getStringCellValue();
+                                         if(empid.equals(id))
+                                         {
+                                         error.setText(" You have already assigned this EMPId to someone else");
+                                         p=true;
+                                         break;
+                                         }
+                                   }
+                                    if(!p){
+                                    error.setText(" ");
                             String QRCodeData = emp.empId;
                             String filePath = emp.firstName + ".png" ;
                             String charset = "UTF-8";
@@ -430,7 +503,7 @@ public class EmployeeAttendance
                             {
                                 QRCode.createQRCode(QRCodeData, filePath, charset, hintMap, 200, 200);
                             }   
-                            catch (WriterException | IOException ex) 
+                            catch ( WriterException | IOException ex) 
                             {
                                Logger.getLogger(EmployeeAttendance.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -461,18 +534,12 @@ public class EmployeeAttendance
                                     cell = row.createCell(++colcount);
                                     cell.setCellValue((String) emp.designation );
                                     cell = row.createCell(++colcount);
-                              /*    cell.setCellValue((String) "Absent" );
-                                    cell = row.createCell(++colcount);
-                                    cell.setCellValue((String) "Absent" );
-                                    cell=row.createCell(++colcount);
-                                    cell.setCellValue((String) "Absent" );
-                                    */
-
+                              
                                     FileOutputStream fout = new FileOutputStream("EmployeeData.xlsx");
                                     wb.write(fout);
 
                                     }
-                                catch(IOException er)
+                                catch(IOException ex)
                                 {
                                     System.out.println("Error occured");
                                 }
@@ -500,11 +567,7 @@ public class EmployeeAttendance
                                     cell = row.createCell(++colcount);
                                     cell.setCellValue((String) "DESIGNATION" );
                                     cell = row.createCell(++colcount);
-                             /*       cell.setCellValue((String) "DATE" );
-                                    cell = row.createCell(++colcount);
-                                    cell.setCellValue((String) "TIME ENTRY" );
-                                    cell = row.createCell(++colcount);
-                                    cell.setCellValue((String) "TIME EXIT" );*/
+                             
 
 
                                     row = sheet.createRow(++rowcount);
@@ -522,11 +585,7 @@ public class EmployeeAttendance
                                     cell = row.createCell(++colcount);
                                     cell.setCellValue((String) emp.designation );
                                     cell = row.createCell(++colcount);
-                             /*       cell.setCellValue((String) "Absent" );
-                                    cell = row.createCell(++colcount);
-                                    cell.setCellValue((String) "Absent" );
-                                    cell = row.createCell(++colcount);
-                                    cell.setCellValue((String) "Absent" );*/
+                             
 
                                     FileOutputStream fout = new FileOutputStream("EmployeeData.xlsx");
                                     wb.write(fout);
@@ -625,10 +684,211 @@ public class EmployeeAttendance
                             lastNameTextField.setText(null);
                             emailTextField.setText(null);
                             phoneTextField.setText(null);
-                            designationTextField.setText(null);
+                            designationTextField.setText(null); 
+                                    }
+                                    
+                                   }
+                                    catch(Exception ex){System.out.println("Error occured");}
+                                                
+                                }
+                                else{
+                                error.setText(" ");
+                            String QRCodeData = emp.empId;
+                            String filePath = emp.firstName + ".png" ;
+                            String charset = "UTF-8";
+                            Map hintMap = new HashMap();
+                            hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+                            try 
+                            {
+                                QRCode.createQRCode(QRCodeData, filePath, charset, hintMap, 200, 200);
+                            }   
+                            catch ( WriterException | IOException ex) 
+                            {
+                               Logger.getLogger(EmployeeAttendance.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                           
+                           
+                            int rowcount,colcount;
+                            File file = new File("EmployeeData.xlsx");
+                            if(file.exists())
+                            {
+                                try
+                                {
+                                    FileInputStream inp = new FileInputStream(file);
+                                    XSSFWorkbook wb = new XSSFWorkbook(inp);
+                                    XSSFSheet sheet = wb.getSheetAt(0);
+                                    rowcount = sheet.getLastRowNum();
+                                    Row row = sheet.createRow(++rowcount);
+                                    colcount=-1;
+                                    Cell cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.empId );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.firstName );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.lastName );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.email );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.phone );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.designation );
+                                    cell = row.createCell(++colcount);
+                              
+                                    FileOutputStream fout = new FileOutputStream("EmployeeData.xlsx");
+                                    wb.write(fout);
+
+                                    }
+                                catch(IOException ex)
+                                {
+                                    System.out.println("Error occured");
+                                }
+
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    XSSFWorkbook wb = new XSSFWorkbook();
+                                    XSSFSheet sheet = wb.createSheet("EmployeeData");
+                                    rowcount=-1;
+                                    colcount=-1;
+                                    Row row = sheet.createRow(++rowcount);
+                                    Cell cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) "EMPLOYEE ID" );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) "FIRST NAME" );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) "LAST NAME" );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) "EMAIL" );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) "PHONE" );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) "DESIGNATION" );
+                                    cell = row.createCell(++colcount);
+                             
+
+
+                                    row = sheet.createRow(++rowcount);
+                                    colcount=-1;
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.empId );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.firstName );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.lastName );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.email );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.phone );
+                                    cell = row.createCell(++colcount);
+                                    cell.setCellValue((String) emp.designation );
+                                    cell = row.createCell(++colcount);
+                             
+
+                                    FileOutputStream fout = new FileOutputStream("EmployeeData.xlsx");
+                                    wb.write(fout);
+                                }
+                                catch(IOException er)
+                                {
+                                    System.out.println("Error occured");
+                                }
+                            }
+                           
+                            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                            String todayDate = df.format(new Date());
+                                  
+                            File attendanceFile = new File(todayDate + ".xlsx");
+                            if(!attendanceFile.exists())
+                            {
+                                XSSFWorkbook wb = new XSSFWorkbook();
+                                XSSFSheet sheet = wb.createSheet("EmployeeAttendance");
+                                rowcount=-1;
+                                colcount=-1;
+                                Row row = sheet.createRow(++rowcount);
+                                Cell cell = row.createCell(++colcount);
+                                cell.setCellValue((String) "EMPLOYEE ID" );
+                                cell = row.createCell(++colcount);
+                                cell.setCellValue((String) "FIRST NAME" );
+                                cell = row.createCell(++colcount);
+                                cell.setCellValue((String) "LAST NAME" );
+                                cell = row.createCell(++colcount);
+                                cell.setCellValue((String) "EMAIL" );
+                                cell = row.createCell(++colcount);
+                                cell.setCellValue((String) "PHONE" );
+                                cell = row.createCell(++colcount);
+                                cell.setCellValue((String) "DESIGNATION" );
+                                cell = row.createCell(++colcount);
+
+                                cell.setCellValue((String) "TIME ENTRY" );
+                                cell = row.createCell(++colcount);
+                                cell.setCellValue((String) "TIME EXIT" );
+                               
+                                try 
+                                {
+                                    FileOutputStream fout;
+                                    fout = new FileOutputStream(todayDate + ".xlsx");
+                                    wb.write(fout);
+                                } 
+                                catch (Exception ex) 
+                                {
+                                    Logger.getLogger(EmployeeAttendance.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                               
+                            }
+                           
+                                  
+                            try 
+                            {
+                                FileInputStream inp;
+                                inp = new FileInputStream(attendanceFile);
+                                XSSFWorkbook wb = new XSSFWorkbook(inp);
+
+                                XSSFSheet sheet = wb.getSheetAt(0);
+                                rowcount = sheet.getLastRowNum();
+                                Row row = sheet.createRow(++rowcount);
+                                colcount=-1;
+                                Cell cell = row.createCell(++colcount);
+                                cell.setCellValue((String) emp.empId );
+                                cell = row.createCell(++colcount);
+                                cell.setCellValue((String) emp.firstName );
+                                cell = row.createCell(++colcount);
+                                cell.setCellValue((String) emp.lastName );
+                                cell = row.createCell(++colcount);
+                                cell.setCellValue((String) emp.email );
+                                cell = row.createCell(++colcount);
+                                cell.setCellValue((String) emp.phone );
+                                cell = row.createCell(++colcount);
+                                cell.setCellValue((String) emp.designation );
+                                cell = row.createCell(++colcount);
+
+                                cell.setCellValue((String) "Absent" );
+                                cell=row.createCell(++colcount);
+                                cell.setCellValue((String) "Absent" );
+
+                                FileOutputStream fout;
+                                fout = new FileOutputStream(todayDate +  ".xlsx");
+                                wb.write(fout);
+                            } 
+                            catch (Exception ex) 
+                            {
+                                Logger.getLogger(EmployeeAttendance.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                                  
+                           
+                            text.setForeground(Color.GREEN);
+                            text.setText("Registered Successfully");
+                            empIdTextField.setText(null);
+                            firstNameTextField.setText(null);
+                            lastNameTextField.setText(null);
+                            emailTextField.setText(null);
+                            phoneTextField.setText(null);
+                            designationTextField.setText(null); /**/
+                            }
                         }
-                       
-                    });
+                        
+                        }
+                            }});
                    
                     clear.addActionListener(new ActionListener(){
                         @Override
@@ -744,7 +1004,8 @@ public class EmployeeAttendance
                             String searchempid=searchtextfield.getText();
                     
                             try 
-                            {     
+                            {      DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                                   String todayDate = df.format(new Date());
                                 FileInputStream fin = new FileInputStream(todayDate + ".xlsx");                          
                                 XSSFWorkbook wb = new XSSFWorkbook(fin);
                                 XSSFSheet sheet = wb.getSheetAt(0);
@@ -817,11 +1078,7 @@ public class EmployeeAttendance
                                 Logger.getLogger(EmployeeAttendance.class.getName()).log(Level.SEVERE, null, ex);
                             }
                   
-                 /*  1. open and access the xml file: open the existing file and get all the employees id from it and check if match is there
-                    * if match(obtain other details and make them fill in the table made)
-                           2. see if there is any entry for searchemp
-                                   if yes then make a table and fill it with entries from the xml file
-                                           if not display the message that employee never came*/
+             
                         }
                     });
                    
