@@ -185,25 +185,37 @@ public class EmployeeAttendance
                 f.setVisible(false);
                 final JFrame eFrame = new JFrame();
                 
+                ImageIcon icon= new ImageIcon("images.png");
+                JLabel pic= new JLabel();
+                pic.setBounds(0,0,480,480);
+                pic.setVisible(true);
+                pic.setIcon(icon);
+                eFrame.add(pic);
+                
+                
+                final JLabel error= new JLabel("");
+                error.setBounds(100,50,200,25);
+                pic.add(error);
+                
                 final JLabel title = new JLabel("Employee Attendence");
                 title.setBounds(100,100,200,25);
-                eFrame.add(title);
+                pic.add(title);
                 
                 final JTextField text = new JTextField();
                 text.setBounds(100,190,200,25);
-                eFrame.add(text);
+                pic.add(text);
                 
                 final JButton select = new JButton("Select");
                 select.setBounds(350,190,90,25);
-                eFrame.add(select);
+                pic.add(select);
                 
                 final JButton submit = new JButton("Submit");
                 submit.setBounds(120,230,90,25);
-                eFrame.add(submit);
+                pic.add(submit);
                 
                 final JButton logout = new JButton("Logout");
                 logout.setBounds(230,230,90,25);
-                eFrame.add(logout);
+                pic.add(logout);
                 
                 eFrame.setLayout(null);
                 eFrame.setSize(500,400);
@@ -224,6 +236,7 @@ public class EmployeeAttendance
                     @Override
                     public void actionPerformed(ActionEvent e) 
                     {
+                        error.setText("");  
                         final JFileChooser fileChooser = new JFileChooser();
                         int result = fileChooser.showOpenDialog(null);
                         if(result==JFileChooser.APPROVE_OPTION)
@@ -240,6 +253,12 @@ public class EmployeeAttendance
                     @Override
                     public void actionPerformed(ActionEvent e) 
                     {
+                        if("".equals(text.getText())){
+                            error.setForeground(Color.red);
+                        error.setText("Please select some file!!");
+                        }
+                        else{
+                          error.setText("");  
                         String filePath = text.getText();
                         String charset = "UTF-8";
                         Map hintMap = new HashMap();
@@ -254,20 +273,30 @@ public class EmployeeAttendance
                             XSSFWorkbook wb = new XSSFWorkbook(fin);
                             XSSFSheet sheet = wb.getSheetAt(0);
                             int rowcount,colcount,i;
-                            Row row;
+                            Row row;  
                             Cell cell;
                             String eid;
                             rowcount = sheet.getLastRowNum();
                             
                             final JFrame aFrame = new JFrame();
+                            aFrame.setSize(300,300);
+                            aFrame.setTitle("Entry frame");
+                            
+                            JLabel pic = new JLabel();
+                            ImageIcon regicon= new ImageIcon("aframe.jpg");
+                            pic.setIcon(regicon);
+                            pic.setVisible(true);
+                            pic.setBounds(0,0,300,300);
+                            aFrame.add(pic);
                                     
                             final JLabel label = new JLabel();
-                            label.setBounds(30,60,150,25);
-                            aFrame.add(label);
+                            label.setBounds(100,60,150,25);
+                            label.setForeground(Color.red);
+                            pic.add(label);
                                     
                             final JButton ok = new JButton("OK");
-                            ok.setBounds(120,100,60,25);
-                            aFrame.add(ok);
+                            ok.setBounds(120,120,60,25);
+                            pic.add(ok);
                             ok.addActionListener(new ActionListener()
                             {
                                 @Override
@@ -327,7 +356,7 @@ public class EmployeeAttendance
                                 }
                             }
                             aFrame.setLayout(null);
-                            aFrame.setSize(200,150);
+                            aFrame.setSize(300,300);
                             aFrame.setVisible(true);
                         }
                        catch (IOException | NotFoundException ex) 
@@ -337,7 +366,7 @@ public class EmployeeAttendance
                        
                     }
                     
-                });
+                }});
             }
            
        });
@@ -355,81 +384,102 @@ public class EmployeeAttendance
                     f.setVisible(false);
                     
                     final JFrame adminFrame = new JFrame();
-                    adminFrame.setSize(1200,650);
+                    adminFrame.setSize(1300,650);
                     adminFrame.setLayout(null);
                     adminFrame.setVisible(true);
                     
                     JPanel p1 = new JPanel();
-                    p1.setBounds(5,5,400,840);
-                    p1.setBackground(Color.GRAY);
+                    p1.setBounds(5,5,400,640);
+                    Color c1 = new Color(18,15,49);
+                    p1.setBackground(c1);
                     p1.setLayout(null);
+                    
            
                     final JLabel error= new JLabel("");
-                    error.setBounds(60, 70, 250, 20);
+                    error.setBounds(60, 130, 250, 20);
                     error.setForeground(Color.red);
                     p1.add(error);
                   
+                    JLabel regpic= new JLabel();
+                    ImageIcon regicon= new ImageIcon("register.jpg");
+                    regpic.setIcon(regicon);
+                    regpic.setVisible(true);
+                    regpic.setBounds(80,5,250,85);
+                    p1.add(regpic);
+                    
+                    JLabel regpic1= new JLabel();
+                    ImageIcon regicon1= new ImageIcon("1.jpg");
+                    regpic1.setIcon(regicon1);
+                    regpic1.setVisible(true);
+                    regpic1.setBounds(0,170,400,320);
+                    p1.add(regpic1); 
+                    
                     JLabel p1Heading = new JLabel("NEW EMPLOYEE REGISTRATION");
-                    p1Heading.setBounds(80,100,250,20);
+                    p1Heading.setBounds(100,100,250,20);
+                    p1Heading.setForeground(Color.white);
                     p1.add(p1Heading);
                     
                     final JLabel empId = new JLabel("EMP ID");
-                    empId.setBounds(55,160,100,20);
-                    p1.add(empId);
+                    empId.setForeground(Color.white);
+                    empId.setBounds(55,10,100,20);
+                    regpic1.add(empId);
+                    
                     final JTextField empIdTextField = new JTextField();
-                    empIdTextField.setBounds(230,160,100,20);
-                    p1.add(empIdTextField);
+                    empIdTextField.setBounds(230,10,100,20);
+                    regpic1.add(empIdTextField);
                    
                     JLabel firstName = new JLabel("FIRST NAME");
-                    firstName.setBounds(55,220,100,20);
-                    p1.add(firstName);
+                    firstName.setBounds(55,50,100,20);
+                    firstName.setForeground(Color.white);
+                    regpic1.add(firstName);
                     final  JTextField firstNameTextField = new JTextField();
-                    firstNameTextField.setBounds(230,220,100,20);
-                    p1.add(firstNameTextField);
+                    firstNameTextField.setBounds(230,50,100,20);
+                    regpic1.add(firstNameTextField);
                    
                     JLabel lastName = new JLabel("LAST NAME");
-                    lastName.setBounds(55,280,100,20);
-                    p1.add(lastName);
+                    lastName.setBounds(55,90,100,20);
+                    lastName.setForeground(Color.white);
+                    regpic1.add(lastName);
                     final JTextField lastNameTextField = new JTextField();
-                    lastNameTextField.setBounds(230,280,100,20);
-                    p1.add(lastNameTextField);
+                    lastNameTextField.setBounds(230,90,100,20);
+                    regpic1.add(lastNameTextField);
                    
                     JLabel email = new JLabel("EMAIL");
-                    email.setBounds(55,340,100,20);
-                    p1.add(email);
+                    email.setBounds(55,130,100,20);
+                    email.setForeground(Color.white);
+                    regpic1.add(email);
                     final JTextField emailTextField = new JTextField();
-                    emailTextField.setBounds(230,340,100,20);
-                    p1.add(emailTextField);
-                    
-                    final JLabel emailvalidation= new JLabel("");
-                    emailvalidation.setBounds(360,340,100,20);
-                    p1.add(emailvalidation);
-                   
+                    emailTextField.setBounds(230,130,100,20);
+                    regpic1.add(emailTextField);
+                                     
                     JLabel phone = new JLabel("PHONE");
-                    phone.setBounds(55,400,100,20);
-                    p1.add(phone);
+                    phone.setBounds(55,170,100,20);
+                    phone.setForeground(Color.white);
+                    regpic1.add(phone);
                     final JTextField phoneTextField = new JTextField();
-                    phoneTextField.setBounds(230,400,100,20);
-                    p1.add(phoneTextField);
+                    phoneTextField.setBounds(230,170,100,20);
+                    regpic1.add(phoneTextField);
                     
                    
                     JLabel designation = new JLabel("DESIGNATION");
-                    designation.setBounds(55,460,100,20);
-                    p1.add(designation);
+                    designation.setBounds(55,210,100,20);
+                    designation.setForeground(Color.white);
+                    regpic1.add(designation);
                     final JTextField designationTextField = new JTextField();
-                    designationTextField.setBounds(230,460,100,20);
-                    p1.add(designationTextField);
+                    designationTextField.setBounds(230,210,100,20);
+                    regpic1.add(designationTextField);
                    
                     JButton submit = new JButton("SUBMIT");
-                    submit.setBounds(55,520,100,30);
-                    p1.add(submit);
+                    submit.setBounds(55,260,100,30);
+                    regpic1.add(submit);
 
                     JButton clear = new JButton("CLEAR");
-                    clear.setBounds(230,520,100,30);
-                    p1.add(clear);
+                    clear.setBounds(230,260,100,30);
+                    regpic1.add(clear);
                    
-                    final JLabel text = new JLabel();
-                    text.setBounds(100,580,200,20);
+                    final JLabel text = new JLabel("");
+                    text.setBounds(100,520,200,20);
+                    text.setForeground(Color.white);
                     p1.add(text);
                    
                     submit.addActionListener(new ActionListener()
@@ -567,9 +617,6 @@ public class EmployeeAttendance
                                     cell = row.createCell(++colcount);
                                     cell.setCellValue((String) "DESIGNATION" );
                                     cell = row.createCell(++colcount);
-                             
-
-
                                     row = sheet.createRow(++rowcount);
                                     colcount=-1;
                                     cell = row.createCell(++colcount);
@@ -906,20 +953,35 @@ public class EmployeeAttendance
                    
                    
                     final JPanel p2 = new JPanel();
-                    p2.setBounds(410,5,900,840);
-                    p2.setBackground(Color.red);
+                    p2.setBounds(410,5,900,640);
                     p2.setLayout(null);
-
-                    JLabel pic = new JLabel(new ImageIcon("register.jpg"));
-                    p2.add(pic);
-
+                   
+                    
+                     ImageIcon icon6= new ImageIcon("admin.png");
+                    JLabel pic6 = new JLabel();
+                    pic6.setBounds(0,0,900,640);
+                    pic6.setVisible(true);
+                    pic6.setIcon(icon6);
+                    p2.add(pic6);
+                    
+                    ImageIcon icon= new ImageIcon("xy.png");
+                    JLabel pic = new JLabel();
+                    pic.setBounds(270,10,900,640);
+                    pic.setVisible(true);
+                    pic.setIcon(icon);
+                    pic6.add(pic);
+                    
                     JButton getattendance = new JButton("GET ATTENDANCE");
                     getattendance.setBounds(300,150,200,50);
-                    p2.add(getattendance);
+                    pic6.add(getattendance);
 
                     JButton logout = new JButton("Logout");
                     logout.setBounds(600,100,100,25);
-                    p2.add(logout);
+                    pic6.add(logout);
+                    
+                    
+                    Color c = new Color(18,30,49);
+                    p2.setBackground(c);
                    
                     logout.addActionListener(new ActionListener()
                     {
@@ -935,30 +997,50 @@ public class EmployeeAttendance
                                  
                    
                     final JPanel p3 = new JPanel();
-                    p3.setBounds(410,5,900,850);
-                    p3.setBackground(Color.YELLOW);
+                    p3.setBounds(410,5,900,650);
                     p3.setLayout(null);
-                    p3.setVisible(false);
+                    
+                    ImageIcon icon7= new ImageIcon("admin.png");
+                    JLabel pic7 = new JLabel();
+                    pic7.setBounds(0,0,900,640);
+                    pic7.setVisible(true);
+                    pic7.setIcon(icon7);
+                    p3.add(pic7);
                    
+                    ImageIcon icon8= new ImageIcon("xy.png");
+                    JLabel pic8= new JLabel();
+                    pic8.setBounds(250,2,250,100);
+                    pic8.setVisible(true);
+                    pic8.setIcon(icon8);
+                    pic7.add(pic8);
+
+                    ImageIcon icon2= new ImageIcon("searchicon.png");
+                    JLabel pic2= new JLabel();
+                    pic2.setBounds(502,120,100,100);
+                    pic2.setVisible(true);
+                    pic2.setIcon(icon2);
+                    pic7.add(pic2);
+   
                     JLabel searchempattendance= new JLabel("Enter Emp id");
+                    searchempattendance.setForeground(Color.WHITE);
                     searchempattendance.setBounds(150,150,100,25);
-                    p3.add(searchempattendance);
+                    pic7.add(searchempattendance);
 
                     final JTextField searchtextfield= new JTextField();
                     searchtextfield.setBounds(250,150,100,25);
-                    p3.add(searchtextfield);
+                    pic7.add(searchtextfield);
 
                     JButton search= new JButton("SEARCH");
                     search.setBounds(400,150,100,25);
-                    p3.add(search);
+                    pic7.add(search);
 
                     JButton logout1 = new JButton("Logout");
                     logout1.setBounds(600,100,100,25);
-                    p3.add(logout1);
+                    pic7.add(logout1);
 
                     final JLabel searchresult= new JLabel("");
-                    searchresult.setBounds(150,10,500,200);
-                    p3.add(searchresult);
+                    searchresult.setBounds(150,15,500,200);
+                    pic7.add(searchresult);
 
                     logout1.addActionListener(new ActionListener()
                     {
@@ -992,8 +1074,8 @@ public class EmployeeAttendance
                     table.setBackground(Color.BLACK);
                     table.setFillsViewportHeight(true);
                     final JScrollPane scroll= new JScrollPane(table);
-                    scroll.setBounds( 20, 200, 800, 350 ); 
-                    p3.add(scroll);
+                    scroll.setBounds( 37, 200, 800, 350 ); 
+                    pic7.add(scroll);
                     scroll.setVisible(false);
                     
                     search.addActionListener(new ActionListener()
@@ -1083,7 +1165,7 @@ public class EmployeeAttendance
                     });
                    
                    
-                    adminFrame.getContentPane().setBackground( Color.gray );
+                    adminFrame.getContentPane().setBackground( c);
                     adminFrame.setLayout(null);
                     adminFrame.add(p1);
                     adminFrame.add(p2);
