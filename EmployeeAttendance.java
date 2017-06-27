@@ -5,15 +5,11 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.*;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -38,8 +34,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import java.util.regex.Matcher.*;
-import java.util.regex.Pattern.*;
 import java.util.regex.*;
 
 public class EmployeeAttendance 
@@ -67,7 +61,6 @@ public class EmployeeAttendance
         File todayFile = new File(todayDate + ".xlsx");
         if(!todayFile.exists())
         {
-            System.out.println("today file");
             File employeeDataFile = new File("EmployeeData.xlsx");
             
             if(employeeDataFile.exists())
@@ -116,9 +109,9 @@ public class EmployeeAttendance
                             
                         }
                         cell = row.createCell(j++);
-                        cell.setCellValue((String) "Absent");
+                        cell.setCellValue((String) "");
                         cell = row.createCell(j++);
-                        cell.setCellValue((String) "Absent");
+                        cell.setCellValue((String) "");
                     }
                     FileOutputStream out = new FileOutputStream(todayDate + ".xlsx");
                     workbook.write(out);
@@ -145,6 +138,7 @@ public class EmployeeAttendance
         final JPasswordField passwordField;
         final JLabel adminIdLabel,passwordLabel,titleLabel;
         final JButton login,employee;
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
        
         titleLabel = new JLabel("Admin Login");
         titleLabel.setBounds(200,100,150,20);
@@ -184,6 +178,7 @@ public class EmployeeAttendance
             public void actionPerformed(ActionEvent e) {
                 f.setVisible(false);
                 final JFrame eFrame = new JFrame();
+                eFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 
                 ImageIcon icon= new ImageIcon("images.png");
                 JLabel pic= new JLabel();
@@ -279,6 +274,7 @@ public class EmployeeAttendance
                             rowcount = sheet.getLastRowNum();
                             
                             final JFrame aFrame = new JFrame();
+                            aFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                             aFrame.setSize(300,300);
                             aFrame.setTitle("Entry frame");
                             
@@ -317,8 +313,9 @@ public class EmployeeAttendance
                                 {
                                     cell = row.getCell(6);
                                     String cellInput = cell.getStringCellValue();
-                                    if(cellInput.equals("Absent"))
+                                    if(cellInput.equals(""))
                                     {
+                                        label.setForeground(Color.green);
                                         label.setText("Success entry") ;
                                         colcount = 5;
                                        
@@ -331,10 +328,10 @@ public class EmployeeAttendance
                                         wb.write(fout);
                                         
                                     }
-                                    else if(row.getCell(7).getStringCellValue().equals("Absent"))
+                                    else if(row.getCell(7).getStringCellValue().equals(""))
                                     {
                                         
-                                        label.setBackground(Color.GREEN);
+                                        label.setBackground(Color.green);
                                         label.setText("Thank you!");
                                         colcount = 7;
                                         Date date = new Date();
@@ -348,7 +345,7 @@ public class EmployeeAttendance
                                     }
                                     else
                                     {
-                                        label.setBackground(Color.RED);
+                                        label.setBackground(Color.red);
                                         label.setText("You hava already exited");
                                     }
                                     
@@ -375,7 +372,6 @@ public class EmployeeAttendance
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                System.out.println("In the login");
                 String inputUserId,inputPassword;
                 inputUserId = adminIdTextField.getText();
                 inputPassword = passwordField.getText();
@@ -384,6 +380,7 @@ public class EmployeeAttendance
                     f.setVisible(false);
                     
                     final JFrame adminFrame = new JFrame();
+                    adminFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     adminFrame.setSize(1300,650);
                     adminFrame.setLayout(null);
                     adminFrame.setVisible(true);
@@ -487,7 +484,6 @@ public class EmployeeAttendance
                         @Override
                         public void actionPerformed(ActionEvent e) 
                         {
-                            System.out.println("In the submit");
                             Employee emp = new Employee();
                             emp.empId = empIdTextField.getText();
                             emp.firstName = firstNameTextField.getText();
@@ -545,7 +541,7 @@ public class EmployeeAttendance
                                     if(!p){
                                     error.setText(" ");
                             String QRCodeData = emp.empId;
-                            String filePath = emp.firstName + ".png" ;
+                            String filePath = emp.firstName + " (" + emp.empId + ")" + ".png" ;
                             String charset = "UTF-8";
                             Map hintMap = new HashMap();
                             hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
@@ -710,9 +706,9 @@ public class EmployeeAttendance
                                 cell.setCellValue((String) emp.designation );
                                 cell = row.createCell(++colcount);
 
-                                cell.setCellValue((String) "Absent" );
+                                cell.setCellValue((String) "" );
                                 cell=row.createCell(++colcount);
-                                cell.setCellValue((String) "Absent" );
+                                cell.setCellValue((String) "" );
 
                                 FileOutputStream fout;
                                 fout = new FileOutputStream(todayDate +  ".xlsx");
@@ -741,7 +737,7 @@ public class EmployeeAttendance
                                 else{
                                 error.setText(" ");
                             String QRCodeData = emp.empId;
-                            String filePath = emp.firstName + ".png" ;
+                            String filePath = emp.firstName + " (" + emp.empId + ")" + ".png" ;
                             String charset = "UTF-8";
                             Map hintMap = new HashMap();
                             hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
@@ -909,9 +905,9 @@ public class EmployeeAttendance
                                 cell.setCellValue((String) emp.designation );
                                 cell = row.createCell(++colcount);
 
-                                cell.setCellValue((String) "Absent" );
+                                cell.setCellValue((String) "" );
                                 cell=row.createCell(++colcount);
-                                cell.setCellValue((String) "Absent" );
+                                cell.setCellValue((String) "" );
 
                                 FileOutputStream fout;
                                 fout = new FileOutputStream(todayDate +  ".xlsx");
@@ -999,6 +995,7 @@ public class EmployeeAttendance
                     final JPanel p3 = new JPanel();
                     p3.setBounds(410,5,900,650);
                     p3.setLayout(null);
+                    p3.setVisible(false);
                     
                     ImageIcon icon7= new ImageIcon("admin.png");
                     JLabel pic7 = new JLabel();
@@ -1016,7 +1013,7 @@ public class EmployeeAttendance
 
                     ImageIcon icon2= new ImageIcon("searchicon.png");
                     JLabel pic2= new JLabel();
-                    pic2.setBounds(502,120,100,100);
+                    pic2.setBounds(502,145,50,50);
                     pic2.setVisible(true);
                     pic2.setIcon(icon2);
                     pic7.add(pic2);
@@ -1039,7 +1036,7 @@ public class EmployeeAttendance
                     pic7.add(logout1);
 
                     final JLabel searchresult= new JLabel("");
-                    searchresult.setBounds(150,15,500,200);
+                    searchresult.setBounds(150,110,500,25);
                     pic7.add(searchresult);
 
                     logout1.addActionListener(new ActionListener()
@@ -1062,7 +1059,7 @@ public class EmployeeAttendance
                             p3.setVisible(true);
                             p2.setVisible(false);
                         }
-                    }); 
+                    });
                    
                     String[] columnNames = {"First Name", "Last Name","Email","Contact","Designation" ,"TimeEntry","TimeExit"};
                     String empfName="",emplName="",empemail="", empphn="", empds="", emptimeentry="", emptimeexit="";
@@ -1075,8 +1072,7 @@ public class EmployeeAttendance
                     table.setFillsViewportHeight(true);
                     final JScrollPane scroll= new JScrollPane(table);
                     scroll.setBounds( 37, 200, 800, 350 ); 
-                    pic7.add(scroll);
-                    scroll.setVisible(false);
+                    
                     
                     search.addActionListener(new ActionListener()
                     {
@@ -1086,8 +1082,9 @@ public class EmployeeAttendance
                             String searchempid=searchtextfield.getText();
                     
                             try 
-                            {      DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                                   String todayDate = df.format(new Date());
+                            {   
+                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                                String todayDate = df.format(new Date());
                                 FileInputStream fin = new FileInputStream(todayDate + ".xlsx");                          
                                 XSSFWorkbook wb = new XSSFWorkbook(fin);
                                 XSSFSheet sheet = wb.getSheetAt(0);
@@ -1113,7 +1110,7 @@ public class EmployeeAttendance
                                         {   searchresult.setForeground(Color.GREEN);
                                             searchresult.setText("Your search results are as displayed! ");
 
-                                            String empfName1,emplName1, empemail1,empphn1,empds1,empdate1,emptimeentry1,emptimeexit1;
+                                            String empfName1,emplName1, empemail1,empphn1,empds1,emptimeentry1,emptimeexit1;
                                             cell=row.getCell(1);
                                             empfName1=cell.getStringCellValue();
 
@@ -1138,9 +1135,9 @@ public class EmployeeAttendance
 
                                             Object[] newRecord ={empfName1, emplName1, empemail1,empphn1, empds1, emptimeentry1,emptimeexit1};
                                             model.addRow(newRecord);
-
-                                            scroll.setVisible(true);
-                                            p3.add(scroll);
+                                            
+                                            pic7.add(scroll);
+                                            p3.setVisible(true);
                                             break;
 
                                         }
